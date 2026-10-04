@@ -1,0 +1,8 @@
+{
+  "name": "quick",
+  "seed": 7,
+  "curve": { "type": "constant", "level": 4 },
+  "steps": [
+    { "id": "ping", "action": { "type": "http", "method": "GET", "url": "http://127.0.0.1:8080/ping" } }
+  ]
+}

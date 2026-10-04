@@ -1,0 +1,58 @@
+{
+  "name": "http-demo",
+  "seed": 42,
+  "curve": {
+    "type": "composite",
+    "segments": [
+      {
+        "curve": { "type": "constant", "level": 5 },
+        "duration": "10s",
+        "transition": "2s"
+      },
+      {
+        "curve": {
+          "type": "step",
+          "base": 5,
+          "steps": [
+            { "at": "0s", "level": 20 },
+            { "at": "5s", "level": 40 }
+          ]
+        },
+        "duration": "10s",
+        "transition": "3s"
+      },
+      {
+        "curve": {
+          "type": "spike",
+          "base": 20,
+          "level": 80,
+          "start": "2s",
+          "end": "4s"
+        },
+        "duration": "8s",
+        "transition": "2s"
+      },
+      {
+        "curve": {
+          "type": "idle",
+          "base": 10,
+          "start": "0s",
+          "end": "3s"
+        },
+        "duration": "6s",
+        "transition": "2s"
+      }
+    ]
+  },
+  "steps": [
+    {
+      "id": "home",
+      "action": { "type": "http", "method": "GET", "url": "http://127.0.0.1:8080/" },
+      "wait": "100ms"
+    },
+    {
+      "id": "think",
+      "action": { "type": "sleep", "duration": "200ms" }
+    }
+  ]
+}
