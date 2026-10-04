@@ -1,0 +1,95 @@
+{
+  "scenario": {
+    "name": "checkout-mix",
+    "seed": 42,
+    "steps": [
+      {
+        "name": "browse",
+        "op": "read",
+        "weight": 4000
+      },
+      {
+        "name": "add-to-cart",
+        "op": "write",
+        "weight": 1200,
+        "wait_before": "2ms"
+      },
+      {
+        "name": "checkout",
+        "op": "txn",
+        "weight": 400,
+        "on_failure": {
+          "kind": "goto",
+          "step": 3
+        }
+      },
+      {
+        "name": "rollback-cart",
+        "op": "delete",
+        "weight": 100
+      }
+    ]
+  },
+  "curve": {
+    "segments": [
+      {
+        "kind": "constant",
+        "level": 4,
+        "duration": "500ms"
+      },
+      {
+        "kind": "ramp",
+        "from": 4,
+        "to": 16,
+        "duration": "500ms"
+      },
+      {
+        "kind": "spike",
+        "level": 32,
+        "duration": "300ms"
+      },
+      {
+        "kind": "constant",
+        "level": 16,
+        "duration": "300ms"
+      },
+      {
+        "kind": "idle",
+        "level": 0,
+        "duration": "200ms"
+      },
+      {
+        "kind": "constant",
+        "level": 8,
+        "duration": "300ms"
+      }
+    ]
+  },
+  "max_concurrency": 32,
+  "queue_size": 64,
+  "tick": "20ms",
+  "checkpoint_path": "/tmp/loadengine-checkpoint.json",
+  "checkpoint_interval": "200ms",
+  "target": {
+    "kind": "sim",
+    "latency": "5ms",
+    "error_rate": 0.02
+  },
+  "faults": [
+    {
+      "op": "txn",
+      "probability": 0.1,
+      "latency": "20ms"
+    },
+    {
+      "op": "read",
+      "probability": 0.01,
+      "error": "injected read failure"
+    }
+  ],
+  "breaker": {
+    "error_rate": 0.5,
+    "p99_latency": "2s",
+    "min_samples": 50
+  }
+}
